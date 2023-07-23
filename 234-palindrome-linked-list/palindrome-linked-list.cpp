@@ -9,29 +9,58 @@
  * };
  */
 class Solution {
-public:
-    bool isPalindrome(ListNode* head) {
-        vector<int> arr;
+private:
+    ListNode* rev(ListNode* head)
+    {
         ListNode* curr = head;
+        ListNode* prev = NULL;
+        ListNode* next = NULL;
 
         while(curr)
         {
-            arr.push_back(curr->val);
-            curr = curr->next;
+            next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        } 
+        return prev;
+    }
+
+public:
+    bool isPalindrome(ListNode* head) {
+        if(head==NULL || head->next==NULL)
+            return true; 
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        //Find middle of LL
+        while(fast->next && fast->next->next)
+        {
+            slow = slow->next;
+            fast = fast->next->next;
         }
 
-        int i = 0;
-        int j = arr.size()-1;
+        //Reverse a LL
+        ListNode* temp = slow->next;
+        slow->next = rev(temp);
 
-        while(i<=j)
+        //Check for the palindrome
+        ListNode* c1 = head;
+        ListNode* c2 = slow->next;
+
+        while(c2!=NULL)
         {
-            if(arr[i]==arr[j]){
-                i++; 
-                j--;
+            if(c1->val == c2->val)
+            {
+                c1 = c1->next;
+                c2 = c2->next;
             }
             else
+            {
                 return false;
+            }
         }
         return true;
     }
+
 };
